@@ -1,8 +1,12 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Duke {
     private static final String HORIZONTAL_LINE = "    ____________________________________________________________";
     private static final String INDENTATION = "     ";
+
+    private static List<String> taskList = new ArrayList<>();
 
     private static void printIndented(String s) {
         System.out.println(INDENTATION + s);
@@ -23,17 +27,22 @@ public class Duke {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             String input = scanner.nextLine();
+            printLine();
             if (input.equals("bye")) {
-                printLine();
                 printIndented("Bye. Hope to see you again soon!");
                 printLine();
                 return;
             }
-            else {
-                printLine();
-                printIndented(input);
-                printLine();
+            if (input.equals("list")) {
+                for (int i = 1; i <= taskList.size(); i++) {
+                    printIndented(i + ". " + taskList.get(i-1));
+                }
             }
+            else {
+                taskList.add(input);
+                printIndented("added: " + input);
+            }
+            printLine();
         }
     }
 
