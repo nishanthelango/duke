@@ -1,6 +1,8 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Duke {
     private static final String HORIZONTAL_LINE = "    ____________________________________________________________";
@@ -46,9 +48,8 @@ public class Duke {
             }
             if (input.equals("list")) {
                 printIndented("Here are the tasks in your list:");
-                for (int i = 1; i <= taskList.size(); i++) {
-                    printIndented(i + ".[" + taskList.get(i-1).getStatusIcon()
-                            + "] "+ taskList.get(i-1).getDescription());
+                for (int i = 0; i < taskList.size(); i++) {
+                    printIndented(i + 1 + "." + taskList.get(i).toString());
                 }
             }
 
@@ -66,8 +67,46 @@ public class Duke {
                     }
                 }
                 else {
-                    taskList.add(new Task(input));
-                    printIndented("added: " + input);
+                    List<String> wordsList = Arrays.asList(line).stream().map(i -> i.trim()).collect(Collectors.toList());
+                    Task task = null;
+                    String s;
+                    if (line[0].equals("todo")) {
+                        s = String.join(" ", wordsList.subList(1, wordsList.size()));
+                        task = new Todo(s);
+
+                    }
+                    else if (line[0].equals("deadline")) {
+                        int index = wordsList.indexOf("/by");
+                        if (index == -1) {
+                            printIndented("Please give a deadline");
+                            printLine();
+                            continue;
+                        }
+                        String s2 = String.join(" ", wordsList.subList(index + 1, wordsList.size()));
+                        String s1 = String.join(" ", wordsList.subList(1, index));
+
+                        task = new Deadline(s1, s2);
+                    }
+                    else if (line[0].equals("event")) {
+                        int index = wordsList.indexOf("/at");
+                        if (index == -1) {
+                            printIndented("Please give a location");
+                            printLine();
+                            continue;
+                        }
+                        String s2 = String.join(" ", wordsList.subList(index + 1, wordsList.size()));
+                        String s1 = String.join(" ", wordsList.subList(1, index));
+                        task = new Event(s1, s2);
+                    }
+                    else {
+                        printIndented("Invalid command");
+                        printLine();
+                        continue;
+                    }
+                    taskList.add(task);
+                    printIndented("Got it. I've added this task:");
+                    printIndented("  " + task.toString());
+                    printIndented("Now you have " + taskList.size() + " tasks in the list.");
                 }
             }
             printLine();
