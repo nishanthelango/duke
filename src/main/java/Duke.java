@@ -1,4 +1,5 @@
 import java.io.*;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -75,56 +76,57 @@ public class Duke {
                     taskList.get(i - 1).markAsDone();
                     printIndented(taskList.get(i - 1).toString());
                 } else {
-                    printIndented("Task not found");
+                    printIndented("Task not found. Please give a valid index.");
                 }
             } else {
-                List<String> wordsList = Arrays.asList(line).stream().map(i -> i.trim()).collect(Collectors.toList());
-                Task task = null;
-                String s;
-                if (line[0].equals("todo")) {
-                    if (line.length == 1) {
-                        throw new DukeException(INVALID_TODO_ERROR_MESSAGE);
-                    }
-                    s = String.join(" ", wordsList.subList(1, wordsList.size()));
-                    task = new Todo(s);
+                try {
+                    List<String> wordsList = Arrays.asList(line).stream().map(i -> i.trim()).collect(Collectors.toList());
+                    Task task = null;
+                    String s;
+                    if (line[0].equals("todo")) {
+                        if (line.length == 1) {
+                            throw new DukeException(INVALID_TODO_ERROR_MESSAGE);
+                        }
+                        s = String.join(" ", wordsList.subList(1, wordsList.size()));
+                        task = new Todo(s);
 
-                } else if (line[0].equals("deadline")) {
-                    if (line.length == 1) {
-                        throw new DukeException(INVALID_DEADLINE_ERROR_MESSAGE);
-                    }
-                    int index = wordsList.indexOf("/by");
-                    if (index == -1) {
-                        printIndented("Please give a deadline");
-                        printLine();
-                        return;
-                    }
-                    String s2 = String.join(" ", wordsList.subList(index + 1, wordsList.size()));
-                    String s1 = String.join(" ", wordsList.subList(1, index));
+                    } else if (line[0].equals("deadline")) {
+                        if (line.length == 1) {
+                            throw new DukeException(INVALID_DEADLINE_ERROR_MESSAGE);
+                        }
+                        int index = wordsList.indexOf("/by");
+                        if (index == -1) {
+                            printIndented("Please give a deadline");
+                            printLine();
+                            return;
+                        }
+                        String s2 = String.join(" ", wordsList.subList(index + 1, wordsList.size()));
+                        String s1 = String.join(" ", wordsList.subList(1, index));
 
-                    task = new Deadline(s1, s2);
-                } else if (line[0].equals("event")) {
-                    if (line.length == 1) {
-                        throw new DukeException(INVALID_EVENT_ERROR_MESSAGE);
+                        task = new Deadline(s1, s2);
+                    } else if (line[0].equals("event")) {
+                        if (line.length == 1) {
+                            throw new DukeException(INVALID_EVENT_ERROR_MESSAGE);
+                        }
+                        int index = wordsList.indexOf("/at");
+                        if (index == -1) {
+                            printIndented("Please give a location");
+                            printLine();
+                            return;
+                        }
+                        String s2 = String.join(" ", wordsList.subList(index + 1, wordsList.size()));
+                        String s1 = String.join(" ", wordsList.subList(1, index));
+                        task = new Event(s1, s2);
+                    } else {
+                        throw new DukeException(INVALID_COMMAND_ERROR_MESSAGE);
                     }
-                    int index = wordsList.indexOf("/at");
-                    if (index == -1) {
-                        printIndented("Please give a location");
-                        printLine();
-                        return;
-                    }
-                    String s2 = String.join(" ", wordsList.subList(index + 1, wordsList.size()));
-                    String s1 = String.join(" ", wordsList.subList(1, index));
-                    task = new Event(s1, s2);
-                } else {
-                    throw new DukeException(INVALID_COMMAND_ERROR_MESSAGE);
-                    //printIndented("Invalid command");
-                    //printLine();
-                    //return;
+                    taskList.add(task);
+                    printIndented("Got it. I've added this task:");
+                    printIndented("  " + task.toString());
+                    printIndented("Now you have " + taskList.size() + " tasks in the list.");
+                } catch (DateTimeParseException e) {
+                    printIndented("Please give a valid date and time in dd/MM/yyyy HHmm format.");
                 }
-                taskList.add(task);
-                printIndented("Got it. I've added this task:");
-                printIndented("  " + task.toString());
-                printIndented("Now you have " + taskList.size() + " tasks in the list.");
             }
         }
         printLine();
@@ -162,11 +164,13 @@ public class Duke {
             return tasks;
         }
         catch (FileNotFoundException e){
-            System.err.println("Unable to locate file");
+            printIndented("Unable to locate file");
+            printLine();
             return new ArrayList<>();
         }
         catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println("Invalid file contents");
+            printIndented("Invalid file contents");
+            printLine();
             return new ArrayList<>();
         }
     }
@@ -180,7 +184,8 @@ public class Duke {
             fileWriter.close();
         }
         catch (IOException e) {
-            System.err.println("Error occurred while writing to file");
+            printIndented("Error occurred while writing to file");
+            printLine();
         }
     }
 
