@@ -1,3 +1,4 @@
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,12 +24,14 @@ public class Duke {
         System.out.println("Hello from\n" + logo);
         Scanner scanner = new Scanner(System.in);
         greetUser();
+        taskList = readData();
         while (true) {
             String input = scanner.nextLine();
             if (input.equals("bye")) {
                 printLine();
                 printIndented("Bye. Hope to see you again soon!");
                 printLine();
+                writeData();
                 return;
             }
             try {
@@ -70,7 +73,7 @@ public class Duke {
                 if (i > 0 && i <= taskList.size()) {
                     printIndented("Nice! I've marked this task as done:");
                     taskList.get(i - 1).markAsDone();
-                    printIndented(taskList.get(i-1).toString());
+                    printIndented(taskList.get(i - 1).toString());
                 } else {
                     printIndented("Task not found");
                 }
@@ -138,6 +141,51 @@ public class Duke {
     }
 
 
-}
+    private static List<Task> readData() {
+        try {
+            List<Task> tasks = new ArrayList<>();
+            File file = new File(System.getProperty("user.dir") + "/src/main/resources/duke.txt");
+            Scanner scanner = new Scanner(file);
+            while (scanner.hasNext()) {
+                String[] line = scanner.nextLine().split(" \\| ");
+                boolean isDone = (line[1].equals("1"));
+                if (line[0].equals("D")) {
+                    tasks.add(new Deadline(line[2], line[3], isDone));
+                }
+                else if (line[0].equals("E")) {
+                    tasks.add(new Event(line[2], line[3], isDone));
+                }
+                else if (line[0].equals("T")){
+                    tasks.add(new Todo(line[2], isDone));
+                }
+            }
+            return tasks;
+        }
+        catch (FileNotFoundException e){
+            System.err.println("Unable to locate file");
+            return new ArrayList<>();
+        }
+        catch (ArrayIndexOutOfBoundsException e) {
+            System.err.println("Invalid file contents");
+            return new ArrayList<>();
+        }
+    }
 
+    private static void writeData() {
+        try {
+            FileWriter fileWriter = new FileWriter(System.getProperty("user.dir") + "/src/main/resources/duke.txt");
+            for (Task task : taskList) {
+                fileWriter.write(task.toText() + "\n");
+            }
+            fileWriter.close();
+        }
+        catch (IOException e) {
+            System.err.println("Error occurred while writing to file");
+        }
+    }
+
+
+
+
+}
 
