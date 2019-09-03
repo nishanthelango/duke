@@ -74,7 +74,17 @@ public class Duke {
                 if (i > 0 && i <= taskList.size()) {
                     printIndented("Nice! I've marked this task as done:");
                     taskList.get(i - 1).markAsDone();
-                    printIndented(taskList.get(i - 1).toString());
+                    printIndented("  " + taskList.get(i - 1).toString());
+                } else {
+                    printIndented("Task not found. Please give a valid index.");
+                }
+            } else if (line.length == 2 && line[0].equals("delete") && isNumeric(line[1])) {
+                int i = Integer.parseInt(line[1]);
+                if (i > 0 && i <= taskList.size()) {
+                    printIndented("Noted. I've removed this task:");
+                    printIndented("  " + taskList.get(i - 1).toString());
+                    taskList.remove(i - 1);
+                    printIndented("Now you have " + taskList.size() + " tasks in the list.");
                 } else {
                     printIndented("Task not found. Please give a valid index.");
                 }
