@@ -41,6 +41,7 @@ public class Duke {
                 printIndented(e.getMessage());
                 printLine();
             }
+
         }
     }
 
@@ -63,9 +64,13 @@ public class Duke {
 
         printLine();
         if (input.equals("list")) {
-            printIndented("Here are the tasks in your list:");
-            for (int i = 0; i < taskList.size(); i++) {
-                printIndented(i + 1 + "." + taskList.get(i).toString());
+            if (taskList.size() == 0) {
+                printIndented("There are no tasks in your list.");
+            } else {
+                printIndented("Here are the tasks in your list:");
+                for (int i = 0; i < taskList.size(); i++) {
+                    printIndented(i + 1 + "." + taskList.get(i).toString());
+                }
             }
         } else {
             String[] line = input.split(" ");
@@ -88,7 +93,25 @@ public class Duke {
                 } else {
                     printIndented("Task not found. Please give a valid index.");
                 }
-            } else {
+            } else if (line[0].equals("find") && line.length > 1) {
+                List<Task> findList = new ArrayList<>();
+                String keyword = input.substring(5).toLowerCase();
+                for (Task task : taskList) {
+                    if (task.getDescription().toLowerCase().contains(keyword)) {
+                        findList.add(task);
+                    }
+                }
+                if (findList.size() == 0) {
+                    printIndented("There are no matching tasks in your list.");
+                } else {
+                    printIndented("Here are the matching tasks in your list:");
+                    for (int i = 0; i < findList.size(); i++) {
+                        printIndented(i + 1 + "." + findList.get(i).toString());
+                    }
+                }
+
+            }
+            else {
                 try {
                     List<String> wordsList = Arrays.asList(line).stream().map(i -> i.trim()).collect(Collectors.toList());
                     Task task = null;
