@@ -53,7 +53,7 @@ public class Ui {
     }
 
     public void showLoadingError() {
-
+        printIndented("");
     }
 
     public void showTaskNotFoundError() {

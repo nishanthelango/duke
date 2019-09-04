@@ -30,7 +30,7 @@ public class Duke {
     private static List<Task> taskList = new ArrayList<>();
 
     public static void main(String[] args) {
-        new Duke("/src/main/resources/duke.txt").run();
+        new Duke("data/tasks.txt").run();
     }
 
 

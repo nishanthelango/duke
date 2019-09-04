@@ -1,0 +1,12 @@
+list
+todo read book 
+deadline read book /by 12/12/2019 1800
+event party /at 14/12/2019 2000
+event
+deadline 
+todo 
+done 1
+done 3
+find read
+find return
+bye

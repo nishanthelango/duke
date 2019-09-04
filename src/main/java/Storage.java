@@ -9,18 +9,18 @@ import java.util.Scanner;
 
 public class Storage {
 
-    private String filePath;
+    private static String filePath;
     private static Ui ui;
 
     public Storage(String filePath) {
-        this.filePath = filePath;
+        Storage.filePath = filePath;
     }
 
 
     public List<Task> load() throws DukeException {
         try {
             List<Task> tasks = new ArrayList<>();
-            File file = new File(System.getProperty("user.dir") + filePath);
+            File file = new File(filePath);
             Scanner scanner = new Scanner(file);
             if (!scanner.hasNext()) {
                 throw new DukeException("Your task list is empty");
@@ -52,7 +52,7 @@ public class Storage {
 
     public static void save(TaskList tasks) {
         try {
-            FileWriter fileWriter = new FileWriter(System.getProperty("user.dir") + "/src/main/resources/duke.txt");
+            FileWriter fileWriter = new FileWriter(filePath);
             for (Task task : tasks.getTasks()) {
                 fileWriter.write(task.toText() + "\n");
             }
