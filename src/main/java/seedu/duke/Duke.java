@@ -13,6 +13,11 @@ public class Duke {
     private TaskList tasks;
     private Ui ui;
 
+    /**
+     * Constructor for Duke
+     *
+     * @param filePath path of file to store the tasks
+     */
     public Duke(String filePath) {
         ui = new Ui();
         storage = new Storage(filePath);
@@ -35,8 +40,9 @@ public class Duke {
         new Duke("data/tasks.txt").run();
     }
 
-
-
+    /**
+     * Starts Duke execution.
+     */
     public void run() {
         ui.showWelcome();
         Scanner scanner = new Scanner(System.in);
@@ -47,7 +53,7 @@ public class Duke {
                 ui.printLine();
                 String[] parsedInput = Parser.parseInput(input);
                 String command = parsedInput[0];
-                List<String> parsedList = Arrays.asList(parsedInput).stream().map(i -> i.trim()).collect(Collectors.toList());
+                List<String> parsedList = Arrays.stream(parsedInput).map(String::trim).collect(Collectors.toList());
 
                 switch (command) {
                     case "bye":

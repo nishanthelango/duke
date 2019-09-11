@@ -14,11 +14,22 @@ public class Storage {
     private static String filePath;
     private static Ui ui;
 
+
+    /**
+     * Constructor for Storage
+     *
+     * @param filePath the path of the file used for storage
+     */
     public Storage(String filePath) {
         Storage.filePath = filePath;
     }
 
-
+    /**
+     * Retrieves a list of Tasks from a .txt file
+     *
+     * @return a list of Tasks
+     * @throws DukeException if the storage is empty
+     */
     public List<Task> load() throws DukeException {
         try {
             List<Task> tasks = new ArrayList<>();
@@ -52,6 +63,11 @@ public class Storage {
         }
     }
 
+    /**
+     * Saves TaskList data in a .txt file
+     *
+     * @param tasks the TaskList to be saved in storage
+     */
     public static void save(TaskList tasks) {
         try {
             FileWriter fileWriter = new FileWriter(filePath);
